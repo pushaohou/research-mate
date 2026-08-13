@@ -7,16 +7,26 @@ import com.pushaohou.researchmate.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.pushaohou.researchmate.dto.LoginRequest;
+import com.pushaohou.researchmate.dto.LoginResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            JwtService jwtService
+    ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
     }
 
     @Transactional
@@ -40,4 +50,28 @@ public class AuthService {
         User savedUser = userRepository.save(user);
         return UserResponse.from(savedUser);
     }
+
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByUsername(request.usernameOrEmail())
+                .or(() -> userRepository.findByEmail(request.usernameOrEmail()))
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "用户名或密码错误"
+                ));
+
+        if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED, "用户名或密码错误"
+            );
+        }
+
+        String token = jwtService.generateToken(user);
+
+        return new LoginResponse(
+                token,
+                "Bearer",
+                jwtService.getExpiresIn(),
+                UserResponse.from(user)
+        );
+    }
+
 }

@@ -12,3 +12,58 @@ Content-Type: application/json
   "email": "demo@example.com",
   "password": "ChangeMe@2026"
 }
+
+### 用户名重复：预期 409
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo_user",
+  "email": "demo2@example.com",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 邮箱重复：预期 409
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo_user_2",
+  "email": "demo@example.com",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 登录成功
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "demo_user",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 密码错误：预期 401
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "demo_user",
+  "password": "WrongPassword"
+}
+
+###
+
+### 获取当前用户：将 TOKEN 替换为登录响应中的 accessToken
+GET http://localhost:8080/api/users/me
+Authorization: Bearer TOKEN
+
+###
+
+### 未携带 Token：预期 401
+GET http://localhost:8080/api/users/me

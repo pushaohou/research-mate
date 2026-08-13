@@ -6,6 +6,8 @@ import com.pushaohou.researchmate.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.pushaohou.researchmate.dto.LoginRequest;
+import com.pushaohou.researchmate.dto.LoginResponse;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -22,4 +24,10 @@ public class AuthController {
     public UserResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
+    }
+
 }
