@@ -6,7 +6,7 @@ AI 个人科研助手：面向科研文献管理与知识检索场景，逐步�
 
 - [x] Initialize Spring Boot backend
 - [x] Add health check API
-- [ ] User authentication
-- [ ] Knowledge base management
+- [x] User authentication
+- [x] Knowledge base management
 - [ ] PDF upload and parsing
 - [ ] RAG knowledge base chat

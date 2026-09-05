@@ -1,0 +1,102 @@
+### 健康检查
+GET http://localhost:8080/api/health
+
+###
+
+### 用户注册
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo_user",
+  "email": "demo@example.com",
+  "password": "ChangeMe@2026"
+}
+
+### 用户名重复：预期 409
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo_user",
+  "email": "demo2@example.com",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 邮箱重复：预期 409
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "username": "demo_user_2",
+  "email": "demo@example.com",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 登录成功
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "demo_user",
+  "password": "ChangeMe@2026"
+}
+
+###
+
+### 密码错误：预期 401
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "usernameOrEmail": "demo_user",
+  "password": "WrongPassword"
+}
+
+###
+
+### 获取当前用户：将 TOKEN 替换为登录响应中的 accessToken
+GET http://localhost:8080/api/users/me
+Authorization: Bearer TOKEN
+
+###
+
+### 未携带 Token：预期 401
+GET http://localhost:8080/api/users/me
+
+
+### 创建知识库
+POST http://localhost:8080/api/knowledge-bases
+Authorization: Bearer TOKEN
+Content-Type: application/json
+
+{
+  "name": "机器学习论文",
+  "description": "用于收集和整理机器学习方向论文"
+}
+
+### 获取知识库列表
+GET http://localhost:8080/api/knowledge-bases
+Authorization: Bearer TOKEN
+
+### 获取知识库详情
+GET http://localhost:8080/api/knowledge-bases/1
+Authorization: Bearer TOKEN
+
+### 更新知识库
+PUT http://localhost:8080/api/knowledge-bases/1
+Authorization: Bearer TOKEN
+Content-Type: application/json
+
+{
+  "name": "深度学习论文",
+  "description": "用于收集深度学习方向论文"
+}
+
+### 删除知识库
+DELETE http://localhost:8080/api/knowledge-bases/1
+Authorization: Bearer TOKEN
